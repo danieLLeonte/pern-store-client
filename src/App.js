@@ -1,8 +1,19 @@
+import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
+
+import { Footer, Header } from "./components";
+import { Home } from "./pages";
+
 function App() {
   return (
-    <div className="text-red-900 text-3xl">
-      <h1>Hello</h1>
-    </div>
+    <Router>
+      <Header />
+      <main className="container mx-auto p-4">
+        <Routes>
+          <Route path="/" element={<Home />} />
+        </Routes>
+      </main>
+      <Footer />
+    </Router>
   );
 }
 
