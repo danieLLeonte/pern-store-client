@@ -2,7 +2,7 @@ import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import axios from "axios";
 
 import { Footer, Header } from "./components";
-import { Home, AddProduct } from "./pages";
+import { Home, AddProduct, AuthPortal } from "./pages";
 
 axios.defaults.baseURL =
   process.env.REACT_APP_SERVER_URL || "http://localhost:3001";
@@ -15,6 +15,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/add-product" element={<AddProduct />} />
+          <Route path="/auth" element={<AuthPortal />} />
         </Routes>
       </main>
       <Footer />
