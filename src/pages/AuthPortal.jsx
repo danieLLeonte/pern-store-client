@@ -1,7 +1,9 @@
 import axios from "axios";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
-const AuthPortal = () => {
+const AuthPortal = ({ setUser }) => {
+  const navigate = useNavigate();
   const [isLogin, setIsLogin] = useState(true);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -15,12 +17,9 @@ const AuthPortal = () => {
   const handleSignin = async (e) => {
     e.preventDefault();
     try {
-      const result = await axios.post(
-        "/auth/signin",
-        { username, password },
-        { withCredentials: true }
-      );
-      console.log(result.data);
+      const result = await axios.post("/auth/signin", { username, password });
+      navigate("/");
+      setUser(result.data);
     } catch (error) {
       console.log(error);
     }
@@ -29,12 +28,9 @@ const AuthPortal = () => {
   const handleSignup = async (e) => {
     e.preventDefault();
     try {
-      const result = await axios.post(
-        "/auth/signup",
-        { username, password },
-        { withCredentials: true }
-      );
-      console.log(result.data);
+      const result = await axios.post("/auth/signup", { username, password });
+      navigate("/");
+      setUser(result.data);
     } catch (error) {
       console.log(error);
     }

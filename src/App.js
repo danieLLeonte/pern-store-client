@@ -1,4 +1,11 @@
-import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
+import { useEffect, useState } from "react";
+import {
+  Navigate,
+  Outlet,
+  Route,
+  BrowserRouter as Router,
+  Routes,
+} from "react-router-dom";
 import axios from "axios";
 
 import { Footer, Header } from "./components";
@@ -6,16 +13,59 @@ import { Home, AddProduct, AuthPortal } from "./pages";
 
 axios.defaults.baseURL =
   process.env.REACT_APP_SERVER_URL || "http://localhost:3001";
+axios.defaults.withCredentials = true;
 
 function App() {
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const checkAuthState = async () => {
+      try {
+        const response = await axios.get("/auth/check");
+        setUser(response.data);
+      } catch (error) {
+        console.log("Error checking authentication state:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    checkAuthState();
+  }, []);
+
+  if (loading) return <div>Loading...</div>;
+
+  const ProtectedRoute = ({ isAllowed, redirectPath = "/auth", children }) => {
+    if (!isAllowed) {
+      return <Navigate to={redirectPath} replace />;
+    }
+    return children ? children : <Outlet />;
+  };
+
   return (
     <Router>
-      <Header />
+      <Header user={user} setUser={setUser} />
       <main className="container mx-auto p-4">
         <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/add-product" element={<AddProduct />} />
-          <Route path="/auth" element={<AuthPortal />} />
+          <Route index element={<Home />} />
+          <Route
+            path="/add-product"
+            element={
+              <ProtectedRoute isAllowed={!!user}>
+                <AddProduct />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/auth"
+            element={
+              <ProtectedRoute isAllowed={!user} redirectPath="/">
+                <AuthPortal setUser={setUser} />
+              </ProtectedRoute>
+            }
+          />
         </Routes>
       </main>
       <Footer />

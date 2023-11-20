@@ -1,7 +1,9 @@
 import axios from "axios";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const AddProduct = () => {
+  const navigate = useNavigate();
   const [form, setForm] = useState({
     name: "",
     description: "",
@@ -24,6 +26,7 @@ const AddProduct = () => {
     e.preventDefault();
     const result = await axios.postForm("/api/products", form);
     alert(result.data); // temporary
+    navigate("/");
   };
 
   return (
