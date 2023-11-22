@@ -9,7 +9,7 @@ import {
 import axios from "axios";
 
 import { Footer, Header } from "./components";
-import { Home, AddProduct, AuthPortal } from "./pages";
+import { Home, AddProduct, AuthPortal, Profile } from "./pages";
 
 axios.defaults.baseURL =
   process.env.REACT_APP_SERVER_URL || "http://localhost:3001";
@@ -45,18 +45,17 @@ function App() {
 
   return (
     <Router>
-      <Header user={user} setUser={setUser} />
+      <Header user={user} />
       <main className="container mx-auto p-4">
         <Routes>
           <Route index element={<Home />} />
-          <Route
-            path="/add-product"
-            element={
-              <ProtectedRoute isAllowed={!!user}>
-                <AddProduct />
-              </ProtectedRoute>
-            }
-          />
+          <Route element={<ProtectedRoute isAllowed={!!user} />}>
+            <Route
+              path="/profile"
+              element={<Profile user={user} setUser={setUser} />}
+            />
+            <Route path="/add-product" element={<AddProduct />} />
+          </Route>
 
           <Route
             path="/auth"
